@@ -1,0 +1,58 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "namespaceName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "sku": {
+            "type": "string"
+        },
+        "messagingUnits": {
+            "type": "string"
+        },
+        "eventHubName": {
+            "type": "string"
+        },
+        "messageRetentionInDays": {
+            "type": "int"
+        },
+        "partitionCount": {
+            "type": "int"
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "2015-08-01",
+            "name": "[parameters('namespaceName')]",
+            "location": "[parameters('location')]",
+            "type": "Microsoft.EventHub/namespaces",
+            "properties": {
+                "MessagingSku": "[parameters('sku')]",
+                "MessagingSKUPlan": {
+                    "MessagingUnits": "[parameters('messagingUnits')]",
+                    "SKU": "[parameters('sku')]"
+                }
+            },
+            "resources":[  
+                {  
+                    "apiVersion":"2015-08-01",
+                    "name":"[parameters('eventHubName')]",
+                    "location": "[parameters('location')]",
+                    "type":"eventhubs",
+                    "dependsOn":[  
+                        "[concat('Microsoft.EventHub/namespaces/', parameters('namespaceName'))]"
+                    ],
+                    "properties":{  
+                        "path":"[parameters('eventHubName')]",
+                        "MessageRetentionInDays": "[parameters('messageRetentionInDays')]",
+                        "PartitionCount": "[parameters('partitionCount')]"
+                    }
+                }
+            ]
+        }
+    ]
+}
