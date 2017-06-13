@@ -5,69 +5,53 @@ inputs:
     string:
       constraints: { minLength: 1 }
       description: id of azure subscription
-  azureUsername:
-    string:
-      constraints: { format: email }
-      description: email address of azure account
-  azurePassword:
+  spId:
     string:
       constraints: { minLength: 1 }
-      description: password of azure account
-      isSecret: true
+      description: id of service principal (or app) making calls to Azure API's
+  spTenantId:
+    string:
+      constraints: { minLength: 1 }
+      description: tenant id (directory id) of service principal (or app) making calls to Azure API's
+  spClientSecret:
+    string:
+      constraints: { minLength: 1 }
+      description: client secret of service principal (or app) making calls to Azure API's
   resourceGroup:
     string:
       constraints: { minLength: 1 }
       description: name of azure resource group
-  namespaceName:
+  namespace:
     string:
       constraints: { minLength: 1 }
-      description: name of the event hub namespace
-  location:
+      description: name of azure event hub namespace
+  name:
     string:
       constraints: { minLength: 1 }
-      description: location of provisioned event hub namespace
-      default: westus
-  sku:
-    string:
-      constraints: { enum: [ Basic, Standard ] }
-      description: The messaging tier for event hub namespace
-      default: Standard
-  messagingUnits:
-    number:
-      constraints: { minimum: 1, maximum: 20 }
-      description: the throughput units, 1-20
-      default: 1
-  eventHubName:
-    string:
-      constraints: { minLength: 1 }
-      description: name of the event hub
+      description: name of the provisioned event hub
   messageRetentionInDays:
     number:
-      constraints: { minimum: 1, maximum: 7 }
-      description: how long to retain the data in event hub, 1-7
-      default: 7
+      constraints: { minimum: 1, maximum: 7, format: integer }
+      description: msg retention for provisioned event hub
+      default: 1
   partitionCount:
     number:
-      constraints: { minimum: 2, maximum: 32 }
-      description: number of partitions chosen, 2-32
+      constraints: { minimum: 2, maximum: 32, format: integer }
+      description: partitions for provisioned event hub
       default: 2
-  template:
-    file:
-      default: /template.json
+version: 1.0.0
 run:
-  serial:
-    - container:
-        image: { ref: 'alpine' }
-        cmd: [ /cmd.sh ]
-        files: { /cmd.sh, /parametersTemplate.json, /parameters.json: parameters }
-        envVars: { namespaceName, location, sku, messagingUnits, eventHubName, messageRetentionInDays, partitionCount }
-    - op:
-        pkg: { ref: github.com/opspec-pkgs/azure.group.deployment.create#0.0.2 }
-        inputs: 
-          subscriptionId:
-          username: azureUsername
-          password: azurePassword
-          resourceGroup:
-          name: eventHubName
-          parameters:
-          template:
+  container:
+    image: { ref: 'opspecpkgs/azure.eventhub.create:1.0.0' }
+    cmd: [node, /index.js]
+    files: { /index.js }
+    envVars:
+      subscriptionId:
+      spId:
+      spTenantId:
+      spClientSecret:
+      resourceGroup:
+      namespace:
+      name:
+      messageRetentionInDays:
+      partitionCount:
