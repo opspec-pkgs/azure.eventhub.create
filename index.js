@@ -2,6 +2,7 @@ const msRestAzure = require('ms-rest-azure');
 const AzureArmEventhub = require('azure-arm-eventhub');
 
 console.log('logging in');
+// see https://github.com/Azure/azure-sdk-for-node/blob/master/runtime/ms-rest-azure/index.d.ts#L397
 msRestAzure.loginWithServicePrincipalSecret(
     process.env.spId,
     process.env.spClientSecret,
