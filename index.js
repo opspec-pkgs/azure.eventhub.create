@@ -1,6 +1,7 @@
 const msRestAzure = require('ms-rest-azure');
 const AzureArmEventhub = require('azure-arm-eventhub');
 
+console.log('logging in');
 msRestAzure.loginWithServicePrincipalSecret(
     process.env.spId,
     process.env.spClientSecret,
@@ -9,6 +10,7 @@ msRestAzure.loginWithServicePrincipalSecret(
         if (error) {
             throw error;
         }
+        console.log('login successful');
 
         const armEventHub = new AzureArmEventhub(credentials, process.env.subscriptionId);
 
@@ -18,6 +20,7 @@ msRestAzure.loginWithServicePrincipalSecret(
             partitionCount: JSON.parse(process.env.partitionCount),
         };
 
+        console.log('creating/updating event hub');
         armEventHub.eventHubs.createOrUpdate(
             process.env.resourceGroup,
             process.env.namespace,
@@ -27,7 +30,7 @@ msRestAzure.loginWithServicePrincipalSecret(
                 if (error) {
                     throw error;
                 }
-                console.log('event hub created or exists.');
+                console.log('creating/updating event hub successful');
             }
         );
 
