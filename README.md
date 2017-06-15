@@ -25,13 +25,14 @@ run:
     pkg: { ref: github.com/opspec-pkgs/azure.eventhub.create#VERSION }
     inputs: 
       subscriptionId:
-      spId:
-      spTenantId:
-      spClientSecret:
+      loginId:
+      loginSecret:
+      loginTenantId:
       resourceGroup:
       namespace:
       name:
       # begin optional args
+      loginType:
       messageRetentionInDays:
       partitionCount:
       # end optional args
