@@ -8,15 +8,14 @@ const login = async () => {
     const loginType = process.env.loginType;
     const loginId = process.env.loginId;
     const loginSecret = process.env.loginSecret;
-    const loginOpts = {domain: process.env.loginTenantId};
 
     let response;
     if (loginType === 'sp') {
-        // https://github.com/Azure/azure-sdk-for-node/blob/master/runtime/ms-rest-azure/index.d.ts#L397
-        response = await msRestAzure.loginWithServicePrincipalSecret(loginId, loginSecret, loginOpts);
+        // https://github.com/Azure/azure-sdk-for-node/blob/66a255dd882762e93e5b9b92ba63ebb222962d59/runtime/ms-rest-azure/lib/login.js#L414
+        response = await msRestAzure.loginWithServicePrincipalSecret(loginId, loginSecret, process.env.loginTenantId);
     } else {
-        // https://github.com/Azure/azure-sdk-for-node/blob/master/runtime/ms-rest-azure/index.d.ts#L356
-        response = await msRestAzure.loginWithUsernamePassword(loginId, loginSecret, loginOpts);
+        // https://github.com/Azure/azure-sdk-for-node/blob/66a255dd882762e93e5b9b92ba63ebb222962d59/runtime/ms-rest-azure/index.d.ts#L376
+        response = await msRestAzure.loginWithUsernamePassword(loginId, loginSecret, {domain: process.env.loginTenantId});
     }
 
     console.log('login successful');
