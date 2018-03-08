@@ -45,10 +45,10 @@ inputs:
       constraints: { minimum: 2, maximum: 32, format: integer }
       description: partitions for provisioned event hub
       default: 2
-version: 2.0.0
+version: 2.1.0
 run:
   container:
-    image: { ref: 'opspecpkgs/azure.eventhub.create:2.0.0' }
+    image: { ref: 'opspecpkgs/azure.eventhub.create:2.1.0' }
     cmd: [node, /index.js]
     files: { /index.js }
     envVars:
